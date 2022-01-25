@@ -1,0 +1,22 @@
+grafana:
+  ingress:
+    annotations:
+      cert-manager.io/cluster-issuer: {{ .Values.grafana.issuer }}
+    enabled: true
+    hosts:
+      - {{ .Values.grafana.fqdn }}
+    tls:
+      - hosts:
+          - {{ .Values.grafana.fqdn }}
+        secretName: grafana-tls
+  adminPassword: {{ .Values.grafana.adminPassword }}
+
+prometheus:
+  prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 20Gi

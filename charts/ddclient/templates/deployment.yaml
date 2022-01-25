@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  serviceName: {{ .Release.Name }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: ddclient
+          image: linuxserver/ddclient:3.9.1
+          volumeMounts:
+            - name: secrets
+              mountPath: "/config/ddclient.conf"
+              subPath: ddclient.conf
+      volumes:
+        - name: secrets
+          secret:
+            secretName: {{ .Release.Name}}

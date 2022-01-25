@@ -1,0 +1,46 @@
+gitRepository: "{{ .Values.homeAssistant.gitRepository }}"
+
+postgresql:
+  postgresqlUsername: "{{ .Values.homeAssistant.postgresql.username }}"
+  postgresqlPassword: "{{ .Values.homeAssistant.postgresql.password }}"
+  postgresqlDatabase: "{{ .Values.homeAssistant.postgresql.database }}"
+
+mosquitto:
+  username: "{{ .Values.homeAssistant.mqtt.username }}"
+  password: "{{ .Values.homeAssistant.mqtt.password }}"
+
+spotify:
+  clientId: "{{ .Values.homeAssistant.spotify.clientId }}"
+  clientSecret: "{{ .Values.homeAssistant.spotify.clientSecret }}"
+
+zigbee2mqtt:
+  permit_join: true
+  homeassistant: true
+  mqtt:
+    base_topic: zigbee2mqtt
+    server: mqtt://{{ .Release.Name }}-mosquitto
+    user: "{{ .Values.homeAssistant.mqtt.username }}"
+    password: "{{ .Values.homeAssistant.mqtt.password }}"
+  serial:
+    port: "{{ .Values.homeAssistant.zigbee2mqtt.serial.port }}"
+    adapter: "{{ .Values.homeAssistant.zigbee2mqtt.serial.adapter }}"
+  frontend:
+    port: 8080
+  advanced:
+    network_key: 
+    {{- range .Values.homeAssistant.zigbee2mqtt.advanced.network_key }}
+        - {{ . }}
+    {{- end }}
+  devices: 
+{{- with .Values.homeAssistant.zigbee2mqtt.devices }}
+    {{- toYaml . | nindent 4 }}
+{{- end }} 
+
+ingress:
+  host: home-assistant.home.jonassjodin.com
+  issuer: letsencrypt-prod
+
+google:
+  projectId: {{ .Values.homeAssistant.google.projectId }}
+  serviceAccount: |
+{{ .Values.homeAssistant.google.serviceAccount | nindent 4 }}

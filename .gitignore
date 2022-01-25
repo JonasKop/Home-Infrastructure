@@ -1,0 +1,10 @@
+charts/**/charts/
+.DS_Store
+.vscode
+kubeconfig.yaml
+
+*.tfstate*
+.terraform
+rke.log
+
+backup/

@@ -1,0 +1,167 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  serviceName: {{ .Release.Name }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      initContainers:
+        - name: config
+          image: alpine:3.15.0
+          command:
+            [
+              "sh",
+              "-c",
+              "apk add git; git clone {{ .Values.gitRepository }} config; ls; ls",
+            ]
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      containers:
+        - name: homeassistant
+          image: homeassistant/home-assistant:2021.12.9
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+            - name: secrets
+              mountPath: "/config/secrets.yaml"
+              subPath: secrets.yaml
+              readOnly: true
+            - mountPath: /config/.storage
+              name: storage
+              readOnly: false
+            # - mountPath: /config/.cloud
+            #   name: cloud
+            #   readOnly: false
+            - name: google-service-account
+              mountPath: "/config/serviceAccount.json"
+              subPath: serviceAccount.json
+      volumes:
+        - name: config
+          emptyDir: {}
+        - name: secrets
+          secret:
+            secretName: {{ .Release.Name}}
+        - name: storage
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-storage
+        # - name: cloud
+        #   persistentVolumeClaim:
+        #     claimName: {{ .Release.Name }}-cloud
+        - name: google-service-account
+          secret:
+            secretName: {{ .Release.Name}}-service-account
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-mosquitto
+spec:
+  serviceName: {{ .Release.Name }}-mosquitto
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-mosquitto
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-mosquitto
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/configMap.yaml") . | sha256sum }}
+    spec:
+      initContainers:
+        - name: password
+          image: eclipse-mosquitto:2.0.14
+          command: 
+            [
+              "mosquitto_passwd", 
+              "-b", 
+              "-c", 
+              "/mosquitto/passwd", 
+              "{{ .Values.mosquitto.username }}", 
+              "{{ .Values.mosquitto.password }}", 
+            ]
+          volumeMounts:
+            - name: mosquitto
+              mountPath: /mosquitto
+      containers:
+        - name: mosquitto
+          image: eclipse-mosquitto:2.0.14
+          volumeMounts:
+            - name: mosquitto
+              mountPath: /mosquitto/passwd
+              subPath: passwd
+            - name: config
+              mountPath: "/mosquitto/config/mosquitto.conf"
+              subPath: mosquitto.conf
+              readOnly: true
+      volumes:
+        - name: mosquitto
+          emptyDir: {}
+        - name: config
+          configMap:
+            name: {{ .Release.Name}}-mosquitto-conf
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-zigbee2mqtt
+spec:
+  serviceName: {{ .Release.Name }}-mosquitto
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-zigbee2mqtt
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-zigbee2mqtt
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/configMap.yaml") . | sha256sum }}
+    spec:
+      initContainers:
+        - name: copy-conf
+          image: alpine:3.15.0
+          # command: [sleep, "1000"]
+          command: 
+            [
+              "sh",
+              "-c",
+              "cp /zigbee2mqtt/configuration.yaml /app/data/configuration.yaml",
+            ]
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            - name: config
+              mountPath: "/zigbee2mqtt/configuration.yaml"
+              subPath: "configuration.yaml"
+      containers:
+        - name: zigbee2mqtt
+          image: koenkk/zigbee2mqtt:1.22.2
+          volumeMounts:
+            - mountPath: /dev/ttyACM0
+              name: ttyacm
+            - mountPath: /app/data
+              name: data
+              readOnly: false
+          securityContext:
+            privileged: true
+      volumes:
+        - name: ttyacm
+          hostPath:
+            path: /dev/ttyACM0
+        - name: config
+          configMap:
+            name: {{ .Release.Name}}-zigbee2mqtt-conf
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-zigbee2mqtt

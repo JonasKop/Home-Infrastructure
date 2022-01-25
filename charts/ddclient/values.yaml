@@ -1,0 +1,14 @@
+# Daemon interval in seconds
+daemon: 60
+# Service for getting public IP
+web: ""
+# DDNS protocol
+protocol: namecheap
+# DDNS server
+server: ""
+# Hostname
+login: ""
+# namescheap DDNS password
+password: ""
+# subdomain
+host: ""

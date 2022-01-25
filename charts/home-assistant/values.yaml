@@ -1,0 +1,49 @@
+# Git repository with home assistant configs
+gitRepository: ""
+
+# Configuration of the bitnami postgresql chart. 
+postgresql:
+  # Postgresql image
+  image:
+    repository: bitnami/postgresql
+    tag: 14.1.0
+  # Default users username
+  postgresqlUsername: ""
+  # Default users password
+  postgresqlPassword: ""
+  # Default database
+  postgresqlDatabase: ""
+  # Enable persistent storage
+  persistence:
+    enabled: true
+
+# Mosquitto mqtt broker configuration
+mosquitto:
+  # Connection username
+  username: ""
+  # Connection password
+  password: ""
+
+# Spotify configuration details
+spotify:
+  # Client ID
+  clientId: ""
+  # Client Secret
+  clientSecret: ""
+
+# Zigbee2mqtt configuration details.
+zigbee2mqtt: {}
+
+# Ingress configuration
+ingress:
+  # FQDN of home assistant
+  host: ""
+  # Certificate issuer
+  issuer: ""
+
+# Google assistant configuration
+google:
+  # GCP Project ID
+  projectId: ""
+  # Service account to access the GCP project
+  serviceAccount: ""
