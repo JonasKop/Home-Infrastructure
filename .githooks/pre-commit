@@ -1,0 +1,11 @@
+#!/bin/bash
+
+GIT_ROOT="$(git rev-parse --show-toplevel)"
+cd "$GIT_ROOT"
+
+
+
+if ! sops -d secrets.enc.yaml> /dev/null 2>&1; then
+  printf "Error: secrets.enc.yaml must be encrypted.\n       sops -i -e secrets.enc.yaml\n"
+  exit 1
+fi

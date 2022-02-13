@@ -2,9 +2,9 @@
 
 set -e
 
-PGPASSWORD="$(yq e '.homeAssistant.postgresql.password' values.yaml)"
-PGUSER="$(yq e '.homeAssistant.postgresql.username' values.yaml)"
-PGDATABASE="$(yq e '.homeAssistant.postgresql.database' values.yaml)"
+PGPASSWORD="$(sops -d secrets.enc.yaml | yq eval-all '. as $item ireduce ({}; . * $item )' values.yaml - | yq e '.homeAssistant.postgresql.password')"
+PGUSER="$(sops -d secrets.enc.yaml | yq eval-all '. as $item ireduce ({}; . * $item )' values.yaml - | yq e '.homeAssistant.postgresql.username')"
+PGDATABASE="$(sops -d secrets.enc.yaml | yq eval-all '. as $item ireduce ({}; . * $item )' values.yaml - | yq e '.homeAssistant.postgresql.database')"
 
 cd backup/$1
 
