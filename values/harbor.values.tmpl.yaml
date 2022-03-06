@@ -1,0 +1,30 @@
+expose:
+  ingress:
+    annotations:
+      cert-manager.io/cluster-issuer: ${clusterIssuer}
+    enabled: true
+    hosts:
+      core: ${fqdn}
+      notary: notary.${fqdn}
+    tls:
+      - hosts:
+          - ${fqdn}
+          - notary.${fqdn}
+        secretName: harbor-tls
+
+externalURL: https://${fqdn}
+
+persistence:
+  enabled: true
+  resourcePolicy: "keep"
+  persistentVolumeClaim:
+    registry:
+      size: 5Gi
+    chartmuseum:
+      size: 5Gi
+    jobservice:
+      size: 1Gi
+    database:
+      size: 1Gi
+
+harborAdminPassword: ${adminPassword}

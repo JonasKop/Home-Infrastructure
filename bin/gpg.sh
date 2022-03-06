@@ -2,6 +2,8 @@
 
 set -e
 
+cd "$(git rev-parse --show-toplevel)"
+
 FINGERPRINT="C16F4A099BEFD6EE6AA65C22ED7356C091A0A7DA"
 COMMAND="$1"
 FILE="$2"

@@ -1,0 +1,6 @@
+web: dynamicdns.park-your-domain.com/getip
+protocol: namecheap
+server: dynamicdns.park-your-domain.com
+login: jonassjodin.com
+password: ${password}
+host: "*.home"

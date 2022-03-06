@@ -1,0 +1,30 @@
+server:
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    hosts:
+      - ${fqdn}
+    tls:
+      - hosts: ["${fqdn}"]
+        secretName: argo-tls
+  additionalApplications:
+%{ for app in apps ~}
+    - ${app}
+%{ endfor ~}
+
+configs: 
+  secret:
+    argocdServerAdminPassword: ${argoPassword}
+  credentialTemplates:
+    github-jonas:
+      url: https://github.com/JonasKop
+      username: ${githubJonasUsername}
+      password: ${githubJonasPassword}
+  repositories:
+    github-jonas:
+      url: https://github.com/JonasKop/Home-Infrastructure

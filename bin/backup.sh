@@ -2,10 +2,11 @@
 
 set -e
 
+cd "$(git rev-parse --show-toplevel)"
 
-PGPASSWORD="$(sops -d secrets.enc.yaml | yq eval-all '. as $item ireduce ({}; . * $item )' values.yaml - | yq e '.homeAssistant.postgresql.password')"
-PGUSER="$(sops -d secrets.enc.yaml | yq eval-all '. as $item ireduce ({}; . * $item )' values.yaml - | yq e '.homeAssistant.postgresql.username')"
-PGDATABASE="$(sops -d secrets.enc.yaml | yq eval-all '. as $item ireduce ({}; . * $item )' values.yaml - | yq e '.homeAssistant.postgresql.database')"
+PGPASSWORD="$(sops -d terraform/secrets.enc.yaml | yq e '.homeAssistant.postgresql.password')"
+PGUSER="$(sops -d terraform/secrets.enc.yaml | yq e '.homeAssistant.postgresql.username')"
+PGDATABASE="$(sops -d terraform/secrets.enc.yaml | yq e '.homeAssistant.postgresql.database')"
 time=$(date -u +"%Y-%m-%d_%H:%M:%S")
 
 mkdir -p backup/$time

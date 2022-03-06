@@ -1,0 +1,83 @@
+gitRepository: ${gitRepository}
+
+postgresql:
+  postgresqlUsername: ${postgresqlUsername}
+  postgresqlPassword: ${postgresqlPassword}
+  postgresqlDatabase: ${postgresqlDatabase}
+
+mosquitto:
+  username: ${mqttUsername}
+  password: ${mqttPassword}
+
+spotify:
+  clientId: ${spotifyClientId}
+  clientSecret: ${spotifyClientSecret}
+
+zigbee2mqtt:
+  permit_join: false
+  homeassistant: true
+  mqtt:
+    base_topic: zigbee2mqtt
+    server: mqtt://home-assistant-mosquitto
+    user: ${mqttUsername}
+    password: ${mqttPassword}
+  serial:
+    port: /dev/ttyACM0
+    adapter: deconz
+  frontend:
+    port: 8080
+  advanced:
+    network_key: 
+      ${networkKey}
+  devices: 
+    "0x588e81fffe6b5ce8":
+      friendly_name: Vitrinskåp 1
+    "0x000b57fffeba1954":
+      friendly_name: Vitrinskåp 2
+    "0xec1bbdfffed093eb":
+      friendly_name: Vardagsrumslampa 1
+    "0xccccccfffebed9d2":
+      friendly_name: Vardagsrumslampa 2
+    "0xec1bbdfffe19c2d3":
+      friendly_name: Vardagsrumslampa 3
+    "0x680ae2fffef9e0e7":
+      friendly_name: Vardagsrumsfönsterlampa 1
+    "0x680ae2fffe40f104":
+      friendly_name: Vardagsrumsfönsterlampa 2
+    "0x680ae2fffe801ab6":
+      friendly_name: Hallampa 1
+    "0x680ae2fffe4213c0":
+      friendly_name: Hallampa 2
+    "0x680ae2fffe415e49":
+      friendly_name: Hallbänklampan
+    "0xec1bbdfffef84c3b":
+      friendly_name: Sovrumslampa 1
+    "0xec1bbdfffef42b77":
+      friendly_name: Sovrumslampa 2
+    "0xec1bbdfffec18fc0":
+      friendly_name: Sovrumslampa 3
+    "0x680ae2fffe418ddc":
+      friendly_name: Sovrumsfönsterlampa 1
+    "0x680ae2fffeacb0db":
+      friendly_name: Sovrumsfönsterlampa 2
+    "0xd0cf5efffeea81d3":
+      friendly_name: Gardin 1
+      invert_cover: true
+    "0xd0cf5efffeea6ade":
+      friendly_name: Gardin 2
+      invert_cover: true
+    "0x680ae2fffe167860":
+      friendly_name: Klädkammarlampan
+    "0x001788010b09e0b8":
+      friendly_name: Klädkammarsensorn
+    "0xec1bbdfffeef0db2":
+      friendly_name: Kökslampan
+
+ingress:
+  host: home-assistant.home.jonassjodin.com
+  issuer: letsencrypt-prod
+
+google:
+  projectId: ${googleProjectId}
+  serviceAccount: |
+    ${googleServiceAccount}

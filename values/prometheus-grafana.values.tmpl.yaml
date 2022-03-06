@@ -1,15 +1,15 @@
 grafana:
   ingress:
     annotations:
-      cert-manager.io/cluster-issuer: {{ .Values.grafana.issuer }}
+      cert-manager.io/cluster-issuer: ${clusterIssuer}
     enabled: true
     hosts:
-      - {{ .Values.grafana.fqdn }}
+      - ${fqdn}
     tls:
       - hosts:
-          - {{ .Values.grafana.fqdn }}
+          - ${fqdn}
         secretName: grafana-tls
-  adminPassword: {{ .Values.grafana.adminPassword }}
+  adminPassword: ${adminPassword}
 
 prometheus:
   prometheusSpec:

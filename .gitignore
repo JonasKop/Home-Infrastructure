@@ -1,4 +1,5 @@
 charts/**/charts/
+.idea/
 .DS_Store
 .vscode
 kubeconfig.yaml
