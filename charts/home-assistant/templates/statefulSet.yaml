@@ -30,7 +30,7 @@ spec:
               mountPath: /config
       containers:
         - name: homeassistant
-          image: homeassistant/home-assistant:2022.2
+          image: homeassistant/home-assistant:2022.4
           volumeMounts:
             - name: config
               mountPath: "/config"
@@ -146,7 +146,7 @@ spec:
               subPath: "configuration.yaml"
       containers:
         - name: zigbee2mqtt
-          image: koenkk/zigbee2mqtt:1.22.2
+          image: koenkk/zigbee2mqtt:1.25.0
           volumeMounts:
             - mountPath: /dev/ttyACM0
               name: ttyacm
