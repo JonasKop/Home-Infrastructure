@@ -30,7 +30,7 @@ spec:
               mountPath: /config
       containers:
         - name: homeassistant
-          image: homeassistant/home-assistant:2022.4
+          image: homeassistant/home-assistant:2022.5
           volumeMounts:
             - name: config
               mountPath: "/config"
@@ -113,57 +113,3 @@ spec:
         - name: config
           configMap:
             name: {{ .Release.Name}}-mosquitto-conf
----
-# apiVersion: apps/v1
-# kind: StatefulSet
-# metadata:
-#   name: {{ .Release.Name }}-zigbee2mqtt
-# spec:
-#   serviceName: {{ .Release.Name }}-mosquitto
-#   selector:
-#     matchLabels:
-#       app: {{ .Release.Name }}-zigbee2mqtt
-#   template:
-#     metadata:
-#       labels:
-#         app: {{ .Release.Name }}-zigbee2mqtt
-#       annotations:
-#         checksum/secret: {{ include (print $.Template.BasePath "/configMap.yaml") . | sha256sum }}
-#     spec:
-#       initContainers:
-#         - name: copy-conf
-#           image: alpine:3.15.0
-#           # command: [sleep, "1000"]
-#           command: 
-#             [
-#               "sh",
-#               "-c",
-#               "cp /zigbee2mqtt/configuration.yaml /app/data/configuration.yaml",
-#             ]
-#           volumeMounts:
-#             - name: data
-#               mountPath: /app/data
-#             - name: config
-#               mountPath: "/zigbee2mqtt/configuration.yaml"
-#               subPath: "configuration.yaml"
-#       containers:
-#         - name: zigbee2mqtt
-#           image: koenkk/zigbee2mqtt:1.25.0
-#           volumeMounts:
-#             - mountPath: /dev/ttyACM0
-#               name: ttyacm
-#             - mountPath: /app/data
-#               name: data
-#               readOnly: false
-#           securityContext:
-#             privileged: true
-#       volumes:
-#         - name: ttyacm
-#           hostPath:
-#             path: /dev/ttyACM0
-#         - name: config
-#           configMap:
-#             name: {{ .Release.Name}}-zigbee2mqtt-conf
-#         - name: data
-#           persistentVolumeClaim:
-#             claimName: {{ .Release.Name }}-zigbee2mqtt

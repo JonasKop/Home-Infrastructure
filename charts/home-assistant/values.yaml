@@ -31,9 +31,6 @@ spotify:
   # Client Secret
   clientSecret: ""
 
-# Zigbee2mqtt configuration details.
-zigbee2mqtt: {}
-
 # Ingress configuration
 ingress:
   # FQDN of home assistant

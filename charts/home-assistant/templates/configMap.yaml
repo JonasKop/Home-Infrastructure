@@ -7,13 +7,3 @@ data:
     allow_anonymous   false
     listener          1883
     password_file     /mosquitto/passwd
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Release.Name }}-zigbee2mqtt-conf
-data:
-  configuration.yaml: |
-{{- with .Values.zigbee2mqtt }}
-    {{- toYaml . | nindent 4 }}
-{{- end }}
