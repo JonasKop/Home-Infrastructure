@@ -1,21 +1,34 @@
 # Git repository with home assistant configs
 gitRepository: ""
 
-# Configuration of the bitnami postgresql chart. 
+# # Configuration of the bitnami postgresql chart.
+# postgresql:
+#   # Postgresql image
+#   image:
+#     repository: bitnami/postgresql
+#     tag: 14.1.0
+#   # Default postgres
+#   postgresqlHost: ""
+#   # Default users username
+#   postgresqlUsername: ""
+#   # Default users password
+#   postgresqlPassword: ""
+#   # Default database
+#   postgresqlDatabase: ""
+#   # Enable persistent storage
+#   persistence:
+#     enabled: true
+
+# Postgres connection configuration
 postgresql:
-  # Postgresql image
-  image:
-    repository: bitnami/postgresql
-    tag: 14.1.0
-  # Default users username
-  postgresqlUsername: ""
-  # Default users password
-  postgresqlPassword: ""
-  # Default database
-  postgresqlDatabase: ""
-  # Enable persistent storage
-  persistence:
-    enabled: true
+  # Hostname
+  hostname: ""
+  # Username
+  username: ""
+  # Password
+  password: ""
+  # Database
+  database: ""
 
 # Mosquitto mqtt broker configuration
 mosquitto:
